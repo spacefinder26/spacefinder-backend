@@ -9,6 +9,7 @@ C:\dev\spacefinder\spacefinderapp\spacefinder-backend\src\main\java\com\spacefin
 C:\dev\spacefinder\spacefinderapp\spacefinder-backend\src\main\java\com\spacefinder\config\JwtFilter.java
 C:\dev\spacefinder\spacefinderapp\spacefinder-backend\src\main\java\com\spacefinder\config\JwtService.java
 C:\dev\spacefinder\spacefinderapp\spacefinder-backend\src\main\java\com\spacefinder\config\SecurityConfig.java
+C:\dev\spacefinder\spacefinderapp\spacefinder-backend\src\main\java\com\spacefinder\config\SwaggerConfig.java
 C:\dev\spacefinder\spacefinderapp\spacefinder-backend\src\main\java\com\spacefinder\property\Property.java
 C:\dev\spacefinder\spacefinderapp\spacefinder-backend\src\main\java\com\spacefinder\property\PropertyController.java
 C:\dev\spacefinder\spacefinderapp\spacefinder-backend\src\main\java\com\spacefinder\property\PropertyRepository.java

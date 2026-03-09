@@ -6,6 +6,7 @@ com\spacefinder\property\PropertyService.class
 com\spacefinder\user\UserController.class
 com\spacefinder\config\SecurityConfig.class
 com\spacefinder\user\Role.class
+com\spacefinder\config\SwaggerConfig.class
 com\spacefinder\auth\AuthResponse.class
 com\spacefinder\SpacefinderBackendApplication.class
 com\spacefinder\auth\AuthService.class
