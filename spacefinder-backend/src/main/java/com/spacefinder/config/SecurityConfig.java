@@ -19,16 +19,19 @@ public class SecurityConfig {
             "/v3/api-docs/**",
 
             // Auth endpoints (add yours here later)
-            "/api/auth/**"
+            "/api/auth/**",
+            "/api/**"
     };
 
     @Bean
     SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception{
         http
+                .cors(cors -> {})
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                    .requestMatchers(WHITE_LIST).permitAll()
-                    .anyRequest().authenticated()
+                    //.requestMatchers(WHITE_LIST).permitAll()
+                    //.anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 );
 
         return http.build();

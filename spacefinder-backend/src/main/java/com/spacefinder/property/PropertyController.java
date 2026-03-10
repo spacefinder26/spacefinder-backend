@@ -1,9 +1,36 @@
 package com.spacefinder.property;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/properties")
+@RequestMapping("/api/property")
 public class PropertyController {
+
+    @Autowired
+    private PropertyService propertyService;
+
+    @PostMapping("/add")
+    public ResponseEntity<?> createProperty(@RequestBody Property property){
+        try{
+            Property newProperty = propertyService.addProperty(property);
+            return new ResponseEntity<>(newProperty, HttpStatus.CREATED);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>("Error occurred while creating a property", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/get/all")
+    public ResponseEntity<List<Property>> getAll(){
+        List<Property> properties = new ArrayList<>();
+        properties = propertyService.getAllProperties();
+
+        return new ResponseEntity<>(properties, HttpStatus.OK);
+    }
 }
