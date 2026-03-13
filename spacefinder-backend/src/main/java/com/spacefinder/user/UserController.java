@@ -46,4 +46,14 @@ public class UserController {
             return null;
         }
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteEmployee(@PathVariable("id") Long id){
+        return null;
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<?> updateEmployee(){
+        return null;
+    }
 }

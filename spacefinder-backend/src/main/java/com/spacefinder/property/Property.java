@@ -22,17 +22,20 @@ public class Property {
 
     private String location;
 
+    private Double size;
+
     private String status;
 
     public Property() {
     }
 
-    public Property(Long id, String title, String description, Double price, String location, String status) {
+    public Property(Long id, String title, String description, Double price, String location, Double size, String status) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.price = price;
         this.location = location;
+        this.size = size;
         this.status = status;
     }
 }

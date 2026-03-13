@@ -33,4 +33,20 @@ public class PropertyController {
 
         return new ResponseEntity<>(properties, HttpStatus.OK);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchProperty() {
+       return null;
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteEmployee(@PathVariable("id") Long id){
+        return null;
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<?> updateEmployee(){
+        return null;
+    }
+
 }

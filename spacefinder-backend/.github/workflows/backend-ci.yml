@@ -43,7 +43,7 @@ jobs:
       - name: Run Tests
         run: mvn test -B
         env:
-          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/spacefinder_test
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/space_finder
           SPRING_DATASOURCE_USERNAME: spacefinder_user
           SPRING_DATASOURCE_PASSWORD: spacefinder_pass
           SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
