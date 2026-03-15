@@ -27,4 +27,19 @@ public class UserService {
     public Optional<User> getUserById(Long id){
         return userRepository.findUserById(id);
     }
+
+    public void deleteUser(Long id){
+        userRepository.deleteById(id);
+    }
+
+    public User updateUser(User user){
+        try {
+            if (user.getId().equals( userRepository.findUserById(user.getId()))){
+                return userRepository.save(user);
+            }else return null;
+        }catch (Exception e){
+            return null;
+
+        }
+    }
 }

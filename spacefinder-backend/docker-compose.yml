@@ -13,6 +13,7 @@ services:
       POSTGRES_DB: spacefinder
       POSTGRES_USER: spacefinder_user
       POSTGRES_PASSWORD: spacefinder_pass
+      SPRING_PROFILES_ACTIVE: docker
     ports:
       - "5432:5432"
     volumes:
@@ -63,7 +64,7 @@ services:
       SPRING_DATASOURCE_USERNAME: spacefinder_user
       SPRING_DATASOURCE_PASSWORD: spacefinder_pass
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_PROFILES_ACTIVE: dev
+      SPRING_PROFILES_ACTIVE: docker
     depends_on:
       postgres:
         condition: service_healthy

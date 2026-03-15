@@ -13,8 +13,8 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-    @PostMapping("login")
+    @PostMapping("/login")
     public AuthResponse login(@RequestBody AuthRequest request){
-        return null;// AuthService;
+        return authService.login(request);
     }
 }
