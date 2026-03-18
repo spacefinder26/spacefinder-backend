@@ -55,6 +55,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    image: vutsulug/spacefinder-backend-app
     container_name: spacefinder-backend
     restart: unless-stopped
     ports:
