@@ -1,22 +1,21 @@
 package com.spacefinder.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
-    @Autowired
     private final UserRepository userRepository;
-
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final PasswordEncoder passwordEncoder;
 
     public User addUser(User user){
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -33,13 +32,22 @@ public class UserService {
     }
 
     public User updateUser(User user){
-        try {
-            if (user.getId().equals( userRepository.findUserById(user.getId()))){
-                return userRepository.save(user);
-            }else return null;
-        }catch (Exception e){
-            return null;
+        userRepository.findUserById(user.getId())
+                .orElseThrow(() -> new RuntimeException("User not found: " + user.getId()));
 
+        if(user.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
+      return userRepository.save(user);
     }
+
+//    public UserDTO mapToDTO(User user) {
+//        UserDTO dto = new UserDTO();
+//        dto.setId(user.getId());
+//        dto.setName(user.getName());
+//        dto.setEmail(user.getEmail());
+//        dto.setRole(user.getRole().name());
+//        dto.setStatus(user.getStatus());
+//        return dto;
+//    }
 }
