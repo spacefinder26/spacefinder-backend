@@ -33,7 +33,7 @@ public class SwaggerConfig {
                                         .description("Local Development Server"),
                                 new Server()
                                         .url("https://api.spacefinder.com")
-                                        .description("Production Server (Azure)")
+                                        .description("Production Server (Railway)")
                 ));
     }
 }
