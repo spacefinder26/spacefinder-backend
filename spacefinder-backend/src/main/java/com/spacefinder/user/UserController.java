@@ -19,13 +19,9 @@ public class UserController {
 
     @PostMapping("/add")
     public ResponseEntity<?> createUser(@RequestBody User user){
-        try{
-            User newUser = userService.addUser(user);
-            return new ResponseEntity<>(newUser, HttpStatus.CREATED);
-        }catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>("Error occurred while creating a user", HttpStatus.BAD_REQUEST);
-        }
+
+        User newUser = userService.addUser(user);
+        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
     @GetMapping("/get/all")
@@ -43,22 +39,14 @@ public class UserController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable("id") Long id){
-       try {
-           userService.deleteUser(id);
-           return new ResponseEntity<>(HttpStatus.OK);
-       }catch (Exception e){
-           return new ResponseEntity<>("Error deleting a user", HttpStatus.INTERNAL_SERVER_ERROR);
-       }
+        userService.deleteUser(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+
     }
 
     @PutMapping("/update")
     public ResponseEntity<?> updateUser(@RequestBody User user){
-        try{
-            User updateUser = userService.updateUser(user);
-            return new ResponseEntity<>(updateUser, HttpStatus.OK);
-        }catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>("Error occurred while updating a user", HttpStatus.BAD_REQUEST);
-        }
+        User updateUser = userService.updateUser(user);
+        return new ResponseEntity<>(updateUser, HttpStatus.OK);
     }
 }
