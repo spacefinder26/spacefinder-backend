@@ -3,16 +3,20 @@ package com.spacefinder.config;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
-import io.swagger.v3.oas.models.servers.Server;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 
 @Configuration
 public class SwaggerConfig {
+
+    @Value("${app.base-url}")
+    private String baseUrl;
+
     @Bean
     public OpenAPI spacefinderOpenAPI(){
         return new OpenAPI()
@@ -28,12 +32,9 @@ public class SwaggerConfig {
                                 .scheme("bearer")
                                 .bearerFormat("JWT")))
                         .servers(List.of(
-                                new Server()
-                                        .url("http://localhost:8081")
-                                        .description("Local Development Server"),
-                                new Server()
-                                        .url("https://api.spacefinder.com")
-                                        .description("Production Server (Railway)")
+                                new io.swagger.v3.oas.models.servers.Server()
+                                        .url(baseUrl)
+                                        .description("Server")
                 ));
     }
 }
