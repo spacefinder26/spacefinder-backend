@@ -1,11 +1,9 @@
-com\spacefinder\config\CorsConfig.class
 com\spacefinder\config\CustomUserDetailsService.class
 com\spacefinder\user\UserDTO.class
 com\spacefinder\property\PropertyService.class
 com\spacefinder\user\UserController.class
 com\spacefinder\user\Role.class
 com\spacefinder\auth\AuthResponse.class
-com\spacefinder\config\CorsConfig$1.class
 com\spacefinder\config\JwtFilter.class
 com\spacefinder\user\User.class
 com\spacefinder\property\Property.class
