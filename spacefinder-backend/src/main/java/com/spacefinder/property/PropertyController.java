@@ -1,5 +1,6 @@
 package com.spacefinder.property;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,10 +11,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/property")
+@RequiredArgsConstructor
 public class PropertyController {
 
-    @Autowired
-    private PropertyService propertyService;
+    private final PropertyService propertyService;
 
     @PostMapping("/add")
     public ResponseEntity<?> createProperty(@RequestBody Property property){
@@ -26,6 +27,13 @@ public class PropertyController {
         }
     }
 
+    @GetMapping("/get/{id}")
+    public ResponseEntity<?> getProperty(@PathVariable("id") Long id) {
+        return propertyService.getProperty(id)
+                .map(property -> ResponseEntity.ok(property))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @GetMapping("/get/all")
     public ResponseEntity<List<Property>> getAll(){
         List<Property> properties = new ArrayList<>();
@@ -34,19 +42,20 @@ public class PropertyController {
         return new ResponseEntity<>(properties, HttpStatus.OK);
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<?> searchProperty() {
-       return null;
-    }
-
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteEmployee(@PathVariable("id") Long id){
-        return null;
+    public ResponseEntity<?> deleteProperty(@PathVariable("id") Long id){
+        propertyService.deleteProperty(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> updateEmployee(){
-        return null;
+    public ResponseEntity<?> updateProperty(@RequestBody Property property){
+        Property updateProperty = propertyService.updateProperty(property);
+        return new ResponseEntity<>(updateProperty, HttpStatus.OK);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<?> searchProperty() {
+        return null;
+    }
 }

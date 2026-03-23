@@ -24,17 +24,17 @@ public class UserController {
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
-    @GetMapping("/get/all")
-    public ResponseEntity<List<User>> getAll() {
-        List<User> users = users = userService.getAllUsers();
-        return new ResponseEntity<>(users,HttpStatus.OK);
-    }
-
     @GetMapping("/get/{id}")
     public ResponseEntity<?> getUser(@PathVariable("id") Long id) {
         return userService.getUserById(id)
                 .map(user -> ResponseEntity.ok(user))
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/get/all")
+    public ResponseEntity<List<User>> getAll() {
+        List<User> users = users = userService.getAllUsers();
+        return new ResponseEntity<>(users,HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")

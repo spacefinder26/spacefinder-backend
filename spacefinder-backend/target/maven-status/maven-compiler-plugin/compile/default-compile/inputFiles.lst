@@ -5,7 +5,10 @@ C:\dev\spacefinder-backend\spacefinder-backend\src\main\java\com\spacefinder\aut
 C:\dev\spacefinder-backend\spacefinder-backend\src\main\java\com\spacefinder\auth\AuthService.java
 C:\dev\spacefinder-backend\spacefinder-backend\src\main\java\com\spacefinder\auth\RegisterRequest.java
 C:\dev\spacefinder-backend\spacefinder-backend\src\main\java\com\spacefinder\booking\Booking.java
+C:\dev\spacefinder-backend\spacefinder-backend\src\main\java\com\spacefinder\booking\BookingController.java
 C:\dev\spacefinder-backend\spacefinder-backend\src\main\java\com\spacefinder\booking\BookingRepository.java
+C:\dev\spacefinder-backend\spacefinder-backend\src\main\java\com\spacefinder\booking\BookingService.java
+C:\dev\spacefinder-backend\spacefinder-backend\src\main\java\com\spacefinder\booking\BookingStatus.java
 C:\dev\spacefinder-backend\spacefinder-backend\src\main\java\com\spacefinder\common\GlobalExceptionHandler.java
 C:\dev\spacefinder-backend\spacefinder-backend\src\main\java\com\spacefinder\config\CustomUserDetailsService.java
 C:\dev\spacefinder-backend\spacefinder-backend\src\main\java\com\spacefinder\config\JwtFilter.java
