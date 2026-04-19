@@ -1,6 +1,7 @@
 package com.spacefinder.auth;
 
 import com.spacefinder.config.JwtService;
+import com.spacefinder.user.Role;
 import com.spacefinder.user.User;
 import com.spacefinder.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +25,12 @@ public class AuthService {
 
         User user = new User();
         user.setName(request.getName());
+        user.setSurname(request.getSurname());
         user.setEmail(request.getEmail());
+        user.setPhone(request.getPhone());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(request.getRole() != null ? request.getRole() : com.spacefinder.user.Role.USER);
-        user.setStatus(request.getStatus());
+        user.setRole(Role.USER);
+        user.setStatus("Active");
 
         userRepository.save(user);
 

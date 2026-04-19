@@ -1,14 +1,12 @@
 package com.spacefinder.user;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/user")
@@ -18,35 +16,38 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/add")
-    public ResponseEntity<?> createUser(@RequestBody User user){
-
-        User newUser = userService.addUser(user);
-        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
-    }
-
-    @GetMapping("/get/{id}")
-    public ResponseEntity<?> getUser(@PathVariable("id") Long id) {
-        return userService.getUserById(id)
-                .map(user -> ResponseEntity.ok(user))
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<UserResponse> addUser(@Valid @RequestBody UserRequest request){
+        return ResponseEntity.ok(userService.addUser(request));
     }
 
     @GetMapping("/get/all")
-    public ResponseEntity<List<User>> getAll() {
-        List<User> users = users = userService.getAllUsers();
-        return new ResponseEntity<>(users,HttpStatus.OK);
+    public ResponseEntity<List<UserResponse>> getAll() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    @GetMapping("/get/{id}")
+    public ResponseEntity<UserResponse> getUser(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(userService.getUserById(id));
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @RequestBody UserRequest request){
+        return ResponseEntity.ok(userService.updateUser(id, request));
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable("id") Long id){
         userService.deleteUser(id);
-        return new ResponseEntity<>(HttpStatus.OK);
-
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<?> updateUser(@RequestBody User user){
-        User updateUser = userService.updateUser(user);
-        return new ResponseEntity<>(updateUser, HttpStatus.OK);
+    @PatchMapping("/make-agent/{id}")
+    public ResponseEntity<UserResponse> makeAgent(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.makeAgent(id));
+    }
+
+    @PatchMapping("/deactivate/{id}")
+    public ResponseEntity<UserResponse> deactivate(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.deactivateUser(id));
     }
 }

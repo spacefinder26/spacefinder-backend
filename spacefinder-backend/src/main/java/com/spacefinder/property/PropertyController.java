@@ -16,46 +16,38 @@ public class PropertyController {
 
     private final PropertyService propertyService;
 
+    // Add property
     @PostMapping("/add")
-    public ResponseEntity<?> createProperty(@RequestBody Property property){
-        try{
-            Property newProperty = propertyService.addProperty(property);
-            return new ResponseEntity<>(newProperty, HttpStatus.CREATED);
-        }catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>("Error occurred while creating a property", HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<PropertyResponse> addProperty(@RequestBody PropertyRequest request){
+        PropertyResponse response = propertyService.addProperty(request);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    // GET property
     @GetMapping("/get/{id}")
-    public ResponseEntity<?> getProperty(@PathVariable("id") Long id) {
-        return propertyService.getProperty(id)
-                .map(property -> ResponseEntity.ok(property))
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<PropertyResponse> getProperty(@PathVariable("id") Long id) {
+        PropertyResponse response = propertyService.getProperty(id);
+        return ResponseEntity.ok(response);
     }
 
+    //GET a list of all properties
     @GetMapping("/get/all")
-    public ResponseEntity<List<Property>> getAll(){
-        List<Property> properties = new ArrayList<>();
-        properties = propertyService.getAllProperties();
-
-        return new ResponseEntity<>(properties, HttpStatus.OK);
+    public ResponseEntity<List<PropertyResponse>> getAll(){
+        List<PropertyResponse> properties = propertyService.getAllProperties();
+        return ResponseEntity.ok(properties);
     }
 
+    // Update an existing property
+    @PutMapping("/update")
+    public ResponseEntity<PropertyResponse> updateProperty(@PathVariable Long id, @RequestBody PropertyRequest request){
+        PropertyResponse response = propertyService.updateProperty(id, request);
+        return ResponseEntity.ok(response);
+    }
+
+    // Delete property
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteProperty(@PathVariable("id") Long id){
+    public ResponseEntity<Void> deleteProperty(@PathVariable Long id){
         propertyService.deleteProperty(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping("/update")
-    public ResponseEntity<?> updateProperty(@RequestBody Property property){
-        Property updateProperty = propertyService.updateProperty(property);
-        return new ResponseEntity<>(updateProperty, HttpStatus.OK);
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<?> searchProperty() {
-        return null;
     }
 }

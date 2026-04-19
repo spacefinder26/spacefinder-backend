@@ -4,6 +4,7 @@ import com.spacefinder.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -12,8 +13,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -21,9 +20,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
 
 @Configuration
 @EnableWebSecurity
@@ -50,21 +46,25 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(WHITE_LIST).permitAll()
+                        //Public access
+                        .requestMatchers("/api/property/get/**").permitAll()
+                        .requestMatchers("/api/property/search").permitAll()
+
                         // Admin only
-//                        .requestMatchers("/api/user/add").hasRole("ADMIN")
-//                        .requestMatchers("/api/user/delete/**").hasRole("ADMIN")
-//                        .requestMatchers("/api/user/update").hasRole("ADMIN")
-//                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/user/add").hasRole("ADMIN")
+                        .requestMatchers("/api/user/delete/**").hasRole("ADMIN")
+                        .requestMatchers("/api/user/update").hasRole("ADMIN")
+                        .requestMatchers("/api/user/make-agent/**").hasRole("ADMIN")
+                        .requestMatchers("/api/user/deactivate/**").hasRole("ADMIN")
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
 
                         // Agent, Agency and Admin
-//                        .requestMatchers("/api/property/add").hasAnyRole("AGENT", "AGENCY", "ADMIN")
-//                        .requestMatchers("/api/property/delete/**").hasAnyRole("AGENT", "AGENCY", "ADMIN")
-//                        .requestMatchers("/api/property/update").hasAnyRole("AGENT", "AGENCY", "ADMIN")
+                        .requestMatchers("/api/property/add").hasAnyRole("AGENT", "AGENCY", "ADMIN")
+                        .requestMatchers("/api/property/delete/**").hasAnyRole("AGENT", "AGENCY", "ADMIN")
+                        .requestMatchers("/api/property/update").hasAnyRole("AGENT", "AGENCY", "ADMIN")
 
                         // Any authenticated user
-//                        .requestMatchers("/api/property/get/all").authenticated()
-//                        .requestMatchers("/api/property/search").authenticated()
-//                        .requestMatchers("/api/user/get/**").authenticated()
+                        .requestMatchers("/api/user/get/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
