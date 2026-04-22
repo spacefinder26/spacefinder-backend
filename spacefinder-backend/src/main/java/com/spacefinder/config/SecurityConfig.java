@@ -4,7 +4,6 @@ import com.spacefinder.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -48,7 +47,7 @@ public class SecurityConfig {
                         .requestMatchers(WHITE_LIST).permitAll()
                         //Public access
                         .requestMatchers("/api/property/get/**").permitAll()
-                        .requestMatchers("/api/property/search").permitAll()
+                        .requestMatchers("/api/property/search/**").permitAll()
 
                         // Admin only
                         .requestMatchers("/api/user/add").hasRole("ADMIN")

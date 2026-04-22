@@ -12,9 +12,12 @@ com\spacefinder\property\Property.class
 com\spacefinder\booking\BookingRepository.class
 com\spacefinder\property\PropertyController.class
 com\spacefinder\property\PropertyRepository.class
+com\spacefinder\property\PropertySearchResponse.class
 com\spacefinder\auth\AuthController.class
+com\spacefinder\property\PropertySearchRequest.class
 com\spacefinder\auth\AuthRequest.class
 com\spacefinder\config\JwtService.class
+com\spacefinder\property\PropertySpecification.class
 com\spacefinder\user\UserRepository.class
 com\spacefinder\booking\BookingRequest.class
 com\spacefinder\user\UserResponse.class

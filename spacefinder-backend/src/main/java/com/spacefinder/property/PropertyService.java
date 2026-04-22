@@ -5,7 +5,11 @@ import com.spacefinder.user.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -76,6 +80,54 @@ public class PropertyService {
         propertyRepository.findPropertyById(id)
                 .orElseThrow(() -> new RuntimeException("Property not found: " + id));
         propertyRepository.deleteById(id);
+    }
+
+    //Search
+    public PropertySearchResponse searchProperties(PropertySearchRequest request) {
+
+        // Pagination defaults
+        int page     = request.getPage()    != null ? request.getPage()    : 0;
+        int size     = request.getSize()    != null ? request.getSize()    : 10;
+        String sortBy  = request.getSortBy()  != null ? request.getSortBy()  : "listingDate";
+        String sortDir = request.getSortDir() != null ? request.getSortDir() : "desc";
+
+        // Build sort direction
+        Sort sort = sortDir.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        // Build dynamic filters
+        Specification<Property> spec = PropertySpecification.withFilters(
+                request.getKeyword(),
+                request.getLocation(),
+                request.getPropertyType(),
+                request.getStatus(),
+                request.getMinPrice(),
+                request.getMaxPrice(),
+                request.getBedroom(),
+                request.getBathroom(),
+                request.getPets(),
+                request.getTransferDuty()
+        );
+
+        // Execute query
+        Page<Property> result = propertyRepository.findAll(spec, pageable);
+
+        // Build response
+        PropertySearchResponse response = new PropertySearchResponse();
+        response.setProperties(result.getContent().stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList()));
+        response.setCurrentPage(result.getNumber());
+        response.setTotalPages(result.getTotalPages());
+        response.setTotalResults(result.getTotalElements());
+        response.setPageSize(result.getSize());
+        response.setHasNext(result.hasNext());
+        response.setHasPrevious(result.hasPrevious());
+
+        return response;
     }
 
     // MAPPER — Entity → Response

@@ -23,7 +23,10 @@ C:\dev\spacefinder-backend\spacefinder-backend\src\main\java\com\spacefinder\pro
 C:\dev\spacefinder-backend\spacefinder-backend\src\main\java\com\spacefinder\property\PropertyRepository.java
 C:\dev\spacefinder-backend\spacefinder-backend\src\main\java\com\spacefinder\property\PropertyRequest.java
 C:\dev\spacefinder-backend\spacefinder-backend\src\main\java\com\spacefinder\property\PropertyResponse.java
+C:\dev\spacefinder-backend\spacefinder-backend\src\main\java\com\spacefinder\property\PropertySearchRequest.java
+C:\dev\spacefinder-backend\spacefinder-backend\src\main\java\com\spacefinder\property\PropertySearchResponse.java
 C:\dev\spacefinder-backend\spacefinder-backend\src\main\java\com\spacefinder\property\PropertyService.java
+C:\dev\spacefinder-backend\spacefinder-backend\src\main\java\com\spacefinder\property\PropertySpecification.java
 C:\dev\spacefinder-backend\spacefinder-backend\src\main\java\com\spacefinder\property\PropertyType.java
 C:\dev\spacefinder-backend\spacefinder-backend\src\main\java\com\spacefinder\SpacefinderBackendApplication.java
 C:\dev\spacefinder-backend\spacefinder-backend\src\main\java\com\spacefinder\user\Role.java

@@ -50,4 +50,10 @@ public class PropertyController {
         propertyService.deleteProperty(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/search")
+    public ResponseEntity<PropertySearchResponse> searchProperties(@RequestBody PropertySearchRequest request) {
+        PropertySearchResponse response = propertyService.searchProperties(request);
+        return ResponseEntity.ok(response);
+    }
 }
