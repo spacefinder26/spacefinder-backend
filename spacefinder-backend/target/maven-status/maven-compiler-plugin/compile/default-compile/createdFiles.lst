@@ -5,6 +5,7 @@ com\spacefinder\user\UserController.class
 com\spacefinder\property\PropertyResponse.class
 com\spacefinder\user\Role.class
 com\spacefinder\auth\AuthResponse.class
+com\spacefinder\property\PropertyImage.class
 com\spacefinder\config\JwtFilter.class
 com\spacefinder\user\User.class
 com\spacefinder\booking\BookingStatus.class
@@ -23,8 +24,10 @@ com\spacefinder\booking\BookingRequest.class
 com\spacefinder\user\UserResponse.class
 com\spacefinder\config\SecurityConfig.class
 com\spacefinder\booking\BookingResponse.class
+com\spacefinder\config\R2Config.class
 com\spacefinder\booking\BookingService.class
 com\spacefinder\config\SwaggerConfig.class
+com\spacefinder\property\StorageService.class
 com\spacefinder\config\DataSeeder.class
 com\spacefinder\common\GlobalExceptionHandler.class
 com\spacefinder\SpacefinderBackendApplication.class
@@ -35,4 +38,5 @@ com\spacefinder\auth\AuthService.class
 com\spacefinder\booking\Booking.class
 com\spacefinder\auth\RegisterRequest.class
 com\spacefinder\user\UserService.class
+com\spacefinder\property\PropertyImageRepository.class
 com\spacefinder\property\AgentSummary.class

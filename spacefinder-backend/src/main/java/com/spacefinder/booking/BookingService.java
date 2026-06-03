@@ -35,4 +35,22 @@ public class BookingService {
        return bookingRepository.save(booking);
     }
 
+    //MAPPER - Entity -> Response
+    public BookingResponse mapToResponse(Booking booking){
+        BookingResponse response = new BookingResponse();
+        response.setId(booking.getId());
+        response.setNotes(booking.getNotes());
+        response.setStatus(String.valueOf(booking.getStatus()));
+        response.setViewingDate(booking.getViewingDate());
+        return response;
+    }
+
+    //MAPPER - Request -> Entity
+    public Booking mapToEntity(BookingRequest request){
+        Booking booking = new Booking();
+        booking.setNotes(request.getNotes());
+        booking.setStatus(BookingStatus.valueOf(request.getStatus()));
+        booking.setViewingDate(request.getViewingDate());
+        return booking;
+    }
 }

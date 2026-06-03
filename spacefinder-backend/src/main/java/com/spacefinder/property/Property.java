@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.sql.Blob;
 import java.util.Date;
 import java.util.List;
 
@@ -34,8 +33,9 @@ public class Property implements Serializable {
     private Date listingDate;
     private Boolean transferDuty;
     private Boolean pets;
-    @Lob
-    private Blob photo;
+
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL)
+    private List<PropertyImage> images;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "agent_id")
@@ -48,7 +48,7 @@ public class Property implements Serializable {
     public Property() {
     }
 
-    public Property(Long id, String title, String description, Double price, String location, Double size, String status, Integer bedroom, Integer bathroom, Integer parking, String propertyType, Date listingDate, Boolean transferDuty, Boolean pets, User agent, List<Booking> bookings) {
+    public Property(Long id, String title, String description, Double price, String location, Double size, String status, Integer bedroom, Integer bathroom, Integer parking, String propertyType, Date listingDate, Boolean transferDuty, Boolean pets, List<PropertyImage> images, User agent, List<Booking> bookings) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -63,6 +63,7 @@ public class Property implements Serializable {
         this.listingDate = listingDate;
         this.transferDuty = transferDuty;
         this.pets = pets;
+        this.images = images;
         this.agent = agent;
         this.bookings = bookings;
     }

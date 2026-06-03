@@ -3,6 +3,7 @@ package com.spacefinder.property;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class PropertyResponse {
@@ -21,4 +22,5 @@ public class PropertyResponse {
     private Boolean transferDuty;
     private Boolean pets;
     private AgentSummary agent;
+    private List<String> imageUrls;
 }

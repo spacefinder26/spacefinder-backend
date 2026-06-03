@@ -1,6 +1,5 @@
 package com.spacefinder.property;
 
-import com.spacefinder.booking.Booking;
 import com.spacefinder.user.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -10,6 +9,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,7 +19,11 @@ import java.util.stream.Collectors;
 public class PropertyService {
 
     private final PropertyRepository propertyRepository;
+    private final PropertyImageRepository propertyImageRepository;
     private final UserRepository userRepository;
+    private final StorageService storageService;
+
+    private static final int MAX_IMAGES = 10;
 
     // Add Property
     // Agent extracted from JWT token
@@ -32,8 +37,13 @@ public class PropertyService {
 
         Property property = mapToEntity(request);
         property.setAgent(agent);
-
         Property saved = propertyRepository.save(property);
+
+        // Upload images if provided
+        if (request.getImages() != null && !request.getImages().isEmpty()) {
+            uploadImages(saved, request.getImages());
+        }
+
         return mapToResponse(saved);
     }
 
@@ -71,7 +81,12 @@ public class PropertyService {
         property.setTransferDuty(request.getTransferDuty());
         property.setPets(request.getPets());
 
+        // Upload new images if provided
+        if (request.getImages() != null && !request.getImages().isEmpty()) {
+            uploadImages(property, request.getImages());
+        }
         Property saved = propertyRepository.save(property);
+
         return mapToResponse(saved);
     }
 
@@ -79,7 +94,20 @@ public class PropertyService {
     public void deleteProperty(Long id) {
         propertyRepository.findPropertyById(id)
                 .orElseThrow(() -> new RuntimeException("Property not found: " + id));
+        List<PropertyImage> images = propertyImageRepository
+                .findByPropertyIdOrderBySortOrderAsc(id);
+        images.forEach(image -> storageService.deleteImage(image.getImageUrl()));
+
         propertyRepository.deleteById(id);
+    }
+
+    // Delete Single Image
+    public void deleteImage(Long propertyId, Long imageId) {
+        PropertyImage image = propertyImageRepository
+                .findByIdAndPropertyId(imageId, propertyId)
+                .orElseThrow(() -> new RuntimeException("Image not found: " + imageId));
+        storageService.deleteImage(image.getImageUrl());
+        propertyImageRepository.delete(image);
     }
 
     //Search
@@ -130,6 +158,37 @@ public class PropertyService {
         return response;
     }
 
+    // HELPER — Upload images to R2 and save URLs to DB
+    private void uploadImages(Property property, List<MultipartFile> files) {
+        Integer existingCount = propertyImageRepository.countByPropertyId(property.getId());
+
+        if (existingCount + files.size() > MAX_IMAGES) {
+            throw new RuntimeException("Maximum " + MAX_IMAGES
+                    + " images allowed. Currently has: " + existingCount);
+        }
+
+        for (int i = 0; i < files.size(); i++) {
+            MultipartFile file = files.get(i);
+
+            // Validate file type
+            String contentType = file.getContentType();
+            if (contentType == null || !contentType.startsWith("image/")) {
+                throw new RuntimeException("Only image files are allowed: "
+                        + file.getOriginalFilename());
+            }
+
+            // Upload to R2 — get back public URL
+            String imageUrl = storageService.uploadImage(file, property.getId());
+
+            // First image is primary if no images exist
+            Boolean isPrimary = existingCount == 0 && i == 0;
+
+            // Save URL to DB
+            existingCount += i;
+            propertyImageRepository.save(new PropertyImage(property, imageUrl, isPrimary, existingCount));
+        }
+    }
+
     // MAPPER — Entity → Response
     public PropertyResponse mapToResponse(Property property) {
         PropertyResponse response = new PropertyResponse();
@@ -158,6 +217,15 @@ public class PropertyService {
             agent.setPhone(property.getAgent().getPhone());
             response.setAgent(agent);
         }
+
+        // Image URLs — just the list of public URLs
+        List<String> imageUrls = propertyImageRepository
+                .findByPropertyIdOrderBySortOrderAsc(property.getId())
+                .stream()
+                .map(PropertyImage::getImageUrl)
+                .collect(Collectors.toList());
+        response.setImageUrls(imageUrls);
+
         return response;
     }
 
