@@ -2,6 +2,7 @@ package com.spacefinder.property;
 
 import com.spacefinder.user.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
@@ -23,6 +24,8 @@ public class PropertyService {
     private final UserRepository userRepository;
     private final StorageService storageService;
 
+    @Value("${cloudflare.r2.public-url}")
+    private String publicUrl;
     private static final int MAX_IMAGES = 10;
 
     // Add Property
@@ -96,7 +99,7 @@ public class PropertyService {
                 .orElseThrow(() -> new RuntimeException("Property not found: " + id));
         List<PropertyImage> images = propertyImageRepository
                 .findByPropertyIdOrderBySortOrderAsc(id);
-        images.forEach(image -> storageService.deleteImage(image.getImageUrl()));
+        images.forEach(image -> storageService.deleteImage(image.getImageKey()));
 
         propertyRepository.deleteById(id);
     }
@@ -106,7 +109,7 @@ public class PropertyService {
         PropertyImage image = propertyImageRepository
                 .findByIdAndPropertyId(imageId, propertyId)
                 .orElseThrow(() -> new RuntimeException("Image not found: " + imageId));
-        storageService.deleteImage(image.getImageUrl());
+        storageService.deleteImage(image.getImageKey());
         propertyImageRepository.delete(image);
     }
 
@@ -222,7 +225,7 @@ public class PropertyService {
         List<String> imageUrls = propertyImageRepository
                 .findByPropertyIdOrderBySortOrderAsc(property.getId())
                 .stream()
-                .map(PropertyImage::getImageUrl)
+                .map(image -> publicUrl + "/" + image.getImageKey())
                 .collect(Collectors.toList());
         response.setImageUrls(imageUrls);
 

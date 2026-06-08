@@ -42,9 +42,8 @@ public class StorageService {
             s3Client.putObject(putRequest,
                     RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
 
-            String imageUrl = publicUrl + "/" + key;
-            log.info("Image uploaded: {}", imageUrl);
-            return imageUrl;
+            log.info("Image uploaded: {}", key);
+            return key;
 
         } catch (IOException e) {
             log.error("Failed to upload image: {}", e.getMessage());
@@ -53,13 +52,12 @@ public class StorageService {
     }
 
     // Delete image from R2
-    public void deleteImage(String imageUrl) {
-        String key = imageUrl.replace(publicUrl + "/", "");
+    public void deleteImage(String imageKey) {
         s3Client.deleteObject(DeleteObjectRequest.builder()
                 .bucket(bucket)
-                .key(key)
+                .key(imageKey)
                 .build());
-        log.info("Image deleted: {}", key);
+        log.info("Image deleted: {}", imageKey);
     }
 
     private String getExtension(String filename) {

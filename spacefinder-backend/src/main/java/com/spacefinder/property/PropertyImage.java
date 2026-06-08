@@ -18,16 +18,16 @@ public class PropertyImage {
     @JoinColumn(name = "property_id", nullable = false)
     private Property property;
 
-    private String imageUrl;
+    private String imageKey;
     private Boolean isPrimary;
     private Integer sortOrder;
 
     public PropertyImage() {
     }
 
-    public PropertyImage(Property property, String imageUrl, Boolean isPrimary, Integer sortOrder) {
+    public PropertyImage(Property property, String imageKey, Boolean isPrimary, Integer sortOrder) {
         this.property = property;
-        this.imageUrl = imageUrl;
+        this.imageKey = imageKey;
         this.isPrimary = isPrimary;
         this.sortOrder = sortOrder;
     }
