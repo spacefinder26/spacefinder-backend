@@ -38,9 +38,11 @@ jobs:
           cache: maven
 
       - name: Build with Maven
+        working-directory: spacefinder-backend
         run: mvn clean compile -B
 
       - name: Run Tests
+        working-directory: spacefinder-backend
         run: mvn test -B
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/space_finder
@@ -53,7 +55,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: backend-test-reports
-          path: target/surefire-reports/
+          path: spacefinder-backend/target/surefire-reports/
 
   docker-push:
     name: Build & Push Docker Image
@@ -77,7 +79,7 @@ jobs:
       - name: Build and Push to Docker Hub
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: spacefinder-backend
           push: true
           tags: |
             vutsulug/spacefinder-backend-app:latest
