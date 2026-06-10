@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Data
 public class PropertyResponse {
@@ -22,5 +23,5 @@ public class PropertyResponse {
     private Boolean transferDuty;
     private Boolean pets;
     private AgentSummary agent;
-    private List<String> imageUrls;
+    private List<Map<String, Object>> images;
 }

@@ -23,11 +23,8 @@ public class StorageService {
     @Value("${cloudflare.r2.bucket}")
     private String bucket;
 
-    @Value("${cloudflare.r2.public-url}")
-    private String publicUrl;
-
     // Upload image → returns public URL
-    public String uploadImage(MultipartFile file, Long propertyId) {
+    public String imageStoring(MultipartFile file, Long propertyId) {
         String extension = getExtension(file.getOriginalFilename());
         String key = "properties/" + propertyId + "/" + UUID.randomUUID() + "." + extension;
 

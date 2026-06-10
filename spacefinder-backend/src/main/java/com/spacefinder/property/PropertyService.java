@@ -12,7 +12,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,7 +28,7 @@ public class PropertyService {
 
     @Value("${cloudflare.r2.public-url}")
     private String publicUrl;
-    private static final int MAX_IMAGES = 10;
+    private static final int MAX_IMAGES = 30;
 
     // Add Property
     // Agent extracted from JWT token
@@ -42,10 +44,10 @@ public class PropertyService {
         property.setAgent(agent);
         Property saved = propertyRepository.save(property);
 
-        // Upload images if provided
-        if (request.getImages() != null && !request.getImages().isEmpty()) {
-            uploadImages(saved, request.getImages());
-        }
+//        // Upload images if provided
+//        if (request.getImages() != null && !request.getImages().isEmpty()) {
+//            uploadImages(saved, request.getImages());
+//        }
 
         return mapToResponse(saved);
     }
@@ -84,10 +86,6 @@ public class PropertyService {
         property.setTransferDuty(request.getTransferDuty());
         property.setPets(request.getPets());
 
-        // Upload new images if provided
-        if (request.getImages() != null && !request.getImages().isEmpty()) {
-            uploadImages(property, request.getImages());
-        }
         Property saved = propertyRepository.save(property);
 
         return mapToResponse(saved);
@@ -162,33 +160,34 @@ public class PropertyService {
     }
 
     // HELPER — Upload images to R2 and save URLs to DB
-    private void uploadImages(Property property, List<MultipartFile> files) {
+    public List<String> uploadImages(Long propertyId, List<MultipartFile> images) {
+        Property property = propertyRepository.findPropertyById(propertyId)
+                .orElseThrow(() -> new RuntimeException("Property not found: " + propertyId));
+
+        saveImages(property, images);
+
+        return propertyImageRepository
+                .findByPropertyIdOrderBySortOrderAsc(propertyId)
+                .stream()
+                .map(image -> publicUrl + "/" + image.getImageKey())
+                .collect(Collectors.toList());
+    }
+
+    //Save Images
+    public void saveImages(Property property, List<MultipartFile> files) {
         Integer existingCount = propertyImageRepository.countByPropertyId(property.getId());
-
         if (existingCount + files.size() > MAX_IMAGES) {
-            throw new RuntimeException("Maximum " + MAX_IMAGES
-                    + " images allowed. Currently has: " + existingCount);
+            throw new RuntimeException("Maximum " + MAX_IMAGES + " images allowed. Currently has: " + existingCount);
         }
-
         for (int i = 0; i < files.size(); i++) {
             MultipartFile file = files.get(i);
-
-            // Validate file type
             String contentType = file.getContentType();
             if (contentType == null || !contentType.startsWith("image/")) {
-                throw new RuntimeException("Only image files are allowed: "
-                        + file.getOriginalFilename());
+                throw new RuntimeException("Only image files are allowed: " + file.getOriginalFilename());
             }
-
-            // Upload to R2 — get back public URL
-            String imageUrl = storageService.uploadImage(file, property.getId());
-
-            // First image is primary if no images exist
+            String imageKey = storageService.imageStoring(file, property.getId());
             Boolean isPrimary = existingCount == 0 && i == 0;
-
-            // Save URL to DB
-            existingCount += i;
-            propertyImageRepository.save(new PropertyImage(property, imageUrl, isPrimary, existingCount));
+            propertyImageRepository.save(new PropertyImage(property, imageKey, isPrimary, existingCount + i));
         }
     }
 
@@ -222,18 +221,23 @@ public class PropertyService {
         }
 
         // Image URLs — just the list of public URLs
-        List<String> imageUrls = propertyImageRepository
+        List<Map<String, Object>> images = propertyImageRepository
                 .findByPropertyIdOrderBySortOrderAsc(property.getId())
                 .stream()
-                .map(image -> publicUrl + "/" + image.getImageKey())
+                .map(image -> {
+                    Map<String, Object> img = new HashMap<>();
+                    img.put("id", image.getId());
+                    img.put("url", publicUrl + "/" + image.getImageKey());
+                    return img;
+                })
                 .collect(Collectors.toList());
-        response.setImageUrls(imageUrls);
+        response.setImages(images);
 
         return response;
     }
 
     // MAPPER — Request → Entity
-    private Property mapToEntity(PropertyRequest request) {
+    public Property mapToEntity(PropertyRequest request) {
         Property property = new Property();
         property.setTitle(request.getTitle());
         property.setDescription(request.getDescription());

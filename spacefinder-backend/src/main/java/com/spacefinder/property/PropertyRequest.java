@@ -22,5 +22,4 @@ public class PropertyRequest {
     private Date listingDate;
     private Boolean transferDuty;
     private Boolean pets;
-    private List<MultipartFile> images;
 }

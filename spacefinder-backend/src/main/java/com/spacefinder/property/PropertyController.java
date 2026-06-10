@@ -7,8 +7,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 
 import java.util.List;
 
@@ -21,16 +19,19 @@ public class PropertyController {
     private final ObjectMapper objectMapper;
 
     // Add property
-    @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<PropertyResponse> addProperty(@RequestPart("data") String data,
-                                                        @RequestPart(value = "images", required = false) List<MultipartFile> images) throws JsonProcessingException{
-        PropertyRequest request = objectMapper.readValue(data, PropertyRequest.class);
-        if(images != null){
-            request.setImages(images);
-        }
+    @PostMapping(value = "/add")
+    public ResponseEntity<PropertyResponse> addProperty(@RequestBody PropertyRequest request){
         PropertyResponse response = propertyService.addProperty(request);
-
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    //Upload property images
+    @PostMapping(value = "/{id}/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<List<String>> uploadImages(
+            @PathVariable Long id,
+            @RequestPart("images") List<MultipartFile> images) {
+        List<String> imageUrls = propertyService.uploadImages(id, images);
+        return new ResponseEntity<>(imageUrls, HttpStatus.CREATED);
     }
 
     // GET property
@@ -48,14 +49,11 @@ public class PropertyController {
     }
 
     // Update an existing property
-    @PutMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PropertyResponse> updateProperty(
             @PathVariable Long id,
             @RequestPart("data") PropertyRequest request,
             @RequestPart(value = "images", required = false) List<MultipartFile> images){
-        if (images != null){
-            request.setImages(images);
-        }
 
         return ResponseEntity.ok(propertyService.updateProperty(id, request));
     }
@@ -69,7 +67,7 @@ public class PropertyController {
 
     // Delete property image
     // AGENT/AGENCY/ADMIN only
-    @DeleteMapping("/delete/images/{imageId}")
+    @DeleteMapping("/delete/{id}/images/{imageId}")
     public ResponseEntity<Void> deleteImage(@PathVariable Long id, @PathVariable Long imageId){
         propertyService.deleteImage(id,imageId);
         return ResponseEntity.noContent().build();
