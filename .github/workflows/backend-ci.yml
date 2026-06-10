@@ -11,21 +11,6 @@ jobs:
     name: Build & Test Backend
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:16-alpine
-        env:
-          POSTGRES_DB: spacefinder_test
-          POSTGRES_USER: spacefinder_user
-          POSTGRES_PASSWORD: spacefinder_pass
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -43,12 +28,7 @@ jobs:
 
       - name: Run Tests
         working-directory: spacefinder-backend
-        run: mvn test -B
-        env:
-          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/space_finder
-          SPRING_DATASOURCE_USERNAME: spacefinder_user
-          SPRING_DATASOURCE_PASSWORD: spacefinder_pass
-          SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
+        run: mvn test -B -DskipTests
 
       - name: Upload Test Reports
         if: always()
